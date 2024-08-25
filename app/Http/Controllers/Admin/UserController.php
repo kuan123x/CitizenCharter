@@ -21,31 +21,30 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $request->user_id,
-            'password' => $request->user_id ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed',
-            'role' => 'required|exists:roles,name',
-            'office_id' => 'nullable|exists:offices,id',
-        ]);
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $request->user_id,
+        'password' => $request->user_id ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed',
+        'role' => 'required|exists:roles,name',
+        'office_id' => 'nullable|exists:offices,id',
+    ]);
 
-        $user = User::updateOrCreate(
-            ['id' => $request->user_id],
-            [
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'password' => $validatedData['password'] ? Hash::make($validatedData['password']) : null,
-            ]
-        );
+    $user = User::updateOrCreate(
+        ['id' => $request->user_id],
+        [
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => $validatedData['password'] ? Hash::make($validatedData['password']) : null,
+        ]
+    );
 
-        $user->syncRoles([$validatedData['role']]);
-        $user->office_id = $validatedData['role'] === 'head' ? $validatedData['office_id'] : null;
-        $user->save();
+    $user->syncRoles([$validatedData['role']]);
+    $user->office_id = $validatedData['role'] === 'head' ? $validatedData['office_id'] : null;
+    $user->save();
 
-        return redirect()->route('admin.users_list')->with('success', 'User saved successfully.');
-    }
-
+    return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
+}
     public function edit($id)
     {
         $user = User::with('roles', 'office')->findOrFail($id);
@@ -57,6 +56,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('admin.users_list')->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 }
