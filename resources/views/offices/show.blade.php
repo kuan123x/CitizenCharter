@@ -27,13 +27,15 @@
     <div>
         <div id="servicesList" class="grid grid-cols-1 gap-6">
             @foreach($services as $service)
-                <a href="{{ route('services.show', $service->id) }}" class="bg-white shadow-md rounded-lg p-8 border border-gray-200 max-w-6xl mx-auto block hover:shadow-lg transition-shadow duration-300 ease-in-out">
+                <a href="{{ route('services.details', $service->id) }}" class="bg-white shadow-md rounded-lg p-8 border border-gray-200 mx-auto block hover:shadow-lg transition-shadow duration-300 ease-in-out" style="width: 100%;">
                     <h3 class="text-lg font-semibold mb-2">{{ $service->service_name }}</h3>
                     <p class="text-gray-700 mb-4">{{ $service->description }}</p>
                 </a>
             @endforeach
         </div>
     </div>
+
+
 
     <!-- Add Service Modal -->
     @role('admin|head')

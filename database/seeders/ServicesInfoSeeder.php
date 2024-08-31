@@ -53,5 +53,18 @@ class ServicesInfoSeeder extends Seeder
             'total_response_time' => '9 mins',
             'person_responsible' => 'Treasurer’s Office Staff',
         ]);
+
+        ServicesInfo::create([
+            'service_id' => $serviceId,
+            'step' => 4,
+            'info_title' => 'Document Preparation Step 3',
+            'clients' => 'Receive the document requested.',
+            'agency_action' => 'Releases the requested document.',
+            'fees' => 02.00,
+            'processing_time' => '1 min',
+            'total_fees' => 0.00,
+            'total_response_time' => '9 mins',
+            'person_responsible' => 'Treasurer’s Office Staff',
+        ]);
     }
 }

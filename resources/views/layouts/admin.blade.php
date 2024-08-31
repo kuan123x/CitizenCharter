@@ -79,8 +79,8 @@
                     FEEDBACKS
                 </a>
 
-                <a href="#" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('users') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
-                    PROFILE
+                <a href="/admin/users" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('admin.users.index') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
+                    USERS
                 </a>
             </nav>
 

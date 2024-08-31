@@ -22,5 +22,14 @@ class ServiceSeeder extends Seeder
             'checklist_of_requirements' => 'ID, Proof of Residence',
             'where_to_secure' => 'Main Office',
         ]);
+        Service::create([
+            'service_name' => 'AMBOT UNSA NI NGA OFFICE',
+            'description' => 'AMBOPT SA KANDING NGA NAAY BANGS',
+            'office_id' => 1, // Example office ID
+            'transaction_id' => 1, // Provide a valid transaction_id
+            'classification' => 'SIMPLE',
+            'checklist_of_requirements' => 'ID, Proof of Residence',
+            'where_to_secure' => 'botyok Office',
+        ]);
     }
 }
