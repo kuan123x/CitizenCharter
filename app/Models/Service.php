@@ -9,6 +9,16 @@ class Service extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'service_name',
+        'description',
+        'office_id',
+        'classification',
+        'transaction_id',
+        'checklist_of_requirements',
+        'where_to_secure',
+    ];
+
     public function office()
     {
         return $this->belongsTo(Office::class);

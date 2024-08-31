@@ -33,8 +33,7 @@
                     <td class="py-2 px-4 border-b">{{ $user->office ? $user->office->office_name : 'N/A' }}</td>
                     @if(auth()->user()->hasRole('admin'))
                         <td class="py-2 px-4 border-b">
-                            <button class="bg-yellow-500 text-white px-4 py-2 rounded editUserButton"
-                                    data-user="{{ $user->id }}">Edit</button>
+                            @include('admin.partials.edit_button', ['user' => $user])
                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
@@ -51,8 +50,8 @@
     </table>
 
     <!-- Add/Edit User Modal -->
-    <div id="userModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg w-1/3 p-4">
+    <div id="userModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+        <div class="bg-white rounded-lg w-1/3 p-4 relative">
             <h2 id="modalTitle" class="text-xl font-bold mb-4">Create User</h2>
             <form id="userForm" action="{{ route('admin.storeUser') }}" method="POST">
                 @csrf

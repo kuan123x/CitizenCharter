@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('office_id')->constrained('offices')->onDelete('cascade');
             $table->text('comment')->nullable();
+            $table->string('reply')->nullable();
             $table->timestamps();
         });
     }

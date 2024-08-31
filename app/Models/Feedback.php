@@ -9,6 +9,8 @@ class Feedback extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['office_id', 'comment', 'reply'];
+
     public function office()
     {
         return $this->belongsTo(Office::class);

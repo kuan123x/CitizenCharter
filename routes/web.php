@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 // Landing route
@@ -36,6 +38,16 @@ Route::middleware('auth')->group(function () {
 
     // Route for Offices page
     Route::get('/offices', [OfficeController::class, 'index'])->name('offices');
+    Route::get('/offices/{id}/services', [OfficeController::class, 'show'])->name('offices.show');
+
+    // Route to store a new service for a specific office
+    Route::post('/offices/{id}/services', [OfficeController::class, 'storeService'])->name('services.storeService');
+
+    // Route for showing a specific service
+    Route::get('/services/{id}', [ServiceController::class, 'show'])->name('services.show');
+
+    // Route for showing service details
+    Route::get('/services/{id}/details', [ServiceController::class, 'showService'])->name('services.details');
 
     // Routes for pending requests
     Route::get('/pendings/services', function () {
@@ -51,6 +63,10 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('pending.offices');
     })->name('pendings');
 });
+
+Route::get('/feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
+Route::post('/feedbacks', [FeedbackController::class, 'store'])->name('feedbacks.store');
+Route::post('/feedbacks/{feedback}/reply', [FeedbackController::class, 'reply'])->name('feedbacks.reply');
 
 // Authentication routes
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');

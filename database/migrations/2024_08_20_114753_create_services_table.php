@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
+            $table->string('service_name');
+            $table->string('description');
             $table->foreignId('office_id')->constrained()->onDelete('cascade');
             $table->enum('classification', ['SIMPLE', 'COMPLEX', 'SIMPLE - COMPLEX', 'HIGHLY TECHNICAL']);
             $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
