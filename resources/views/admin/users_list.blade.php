@@ -15,33 +15,35 @@
     <table class="min-w-full bg-white border border-gray-200 rounded">
         <thead>
             <tr>
-                <th class="py-2 px-4 border-b">Name</th>
-                <th class="py-2 px-4 border-b">Email</th>
-                <th class="py-2 px-4 border-b">Role</th>
-                <th class="py-2 px-4 border-b">Office</th>
+                <th class="py-3 px-6 border-b text-left">Username</th>
+                <th class="py-3 px-6 border-b text-left">Office</th>
+                <th class="py-3 px-6 border-b text-left">Role</th>
                 @if(auth()->user()->hasRole('admin'))
-                    <th class="py-2 px-4 border-b">Actions</th>
+                    <th class="py-3 px-6 border-b text-left">Actions</th>
                 @endif
             </tr>
         </thead>
         <tbody>
             @foreach($users as $user)
                 <tr>
-                    <td class="py-2 px-4 border-b">{{ $user->name }}</td>
-                    <td class="py-2 px-4 border-b">{{ $user->email }}</td>
-                    <td class="py-2 px-4 border-b">{{ $user->roles->pluck('name')->implode(', ') }}</td>
-                    <td class="py-2 px-4 border-b">{{ $user->office ? $user->office->office_name : 'N/A' }}</td>
-                    @if(auth()->user()->hasRole('admin'))
-                        <td class="py-2 px-4 border-b">
-                            @include('admin.partials.edit_button', ['user' => $user])
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded"
-                                        onclick="return confirm('Are you sure you want to delete this user?');">
-                                    Delete
-                                </button>
-                            </form>
+                    <td class="py-3 px-6 border-b">{{ $user->username }}</td>
+                    <td class="py-3 px-6 border-b">{{ $user->office ? $user->office->office_name : 'N/A' }}</td>
+                    <td class="py-3 px-6 border-b">{{ $user->roles->pluck('name')->implode(', ') }}</td>
+
+                    @if(auth()->user()->hasRole('admin') && $user->roles->pluck('name')->implode(', ') !== 'admin')
+                        <td class="py-3 px-6 border-b">
+                            <div class="flex space-x-2"> <!-- Flex container to keep buttons side-by-side -->
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded editUserButton"
+                                        data-user="{{ $user->id }}">Edit</button>
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded"
+                                            onclick="return confirm('Are you sure you want to delete this user?');">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     @endif
                 </tr>
@@ -55,16 +57,13 @@
             <h2 id="modalTitle" class="text-xl font-bold mb-4">Create User</h2>
             <form id="userForm" action="{{ route('admin.storeUser') }}" method="POST">
                 @csrf
+                <!-- This hidden input is added dynamically when editing to use PUT method -->
+                <input type="hidden" name="_method" value="POST" id="methodField">
                 <input type="hidden" id="userId" name="user_id" value="">
 
                 <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium">Name</label>
-                    <input type="text" id="name" name="name" class="mt-1 p-2 block w-full border rounded" required>
-                </div>
-
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium">Email</label>
-                    <input type="email" id="email" name="email" class="mt-1 p-2 block w-full border rounded" required>
+                    <label for="username" class="block text-sm font-medium">Username</label>
+                    <input type="text" id="username" name="username" class="mt-1 p-2 block w-full border rounded" required>
                 </div>
 
                 <div class="mb-4">
@@ -82,13 +81,14 @@
                     <label for="role" class="block text-sm font-medium">Role</label>
                     <select id="role" name="role" class="mt-1 p-2 block w-full border rounded" required>
                         @foreach($roles as $role)
-                            <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                            @if($role->name !== 'admin') {{-- Exclude admin role --}}
+                                <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
 
-                <!-- Office selection dropdown -->
-                <div id="office-selection" class="mb-4 hidden">
+                <div class="mb-4">
                     <label for="office_id" class="block text-sm font-medium">Office</label>
                     <select id="office_id" name="office_id" class="mt-1 p-2 block w-full border rounded">
                         <option value="">Select Office</option>
@@ -112,45 +112,32 @@
             document.getElementById('userForm').reset();
             document.getElementById('userId').value = '';
             document.getElementById('userForm').action = '{{ route('admin.storeUser') }}';
-            document.getElementById('office-selection').classList.add('hidden'); // Initially hide office selection
+            document.getElementById('methodField').value = 'POST'; // Set form method to POST for creating
             document.getElementById('userModal').classList.remove('hidden');
         });
 
-        document.querySelectorAll('.editUserButton').forEach(function(button) {
-            button.addEventListener('click', function () {
-                var userId = this.getAttribute('data-user');
-                fetch(`/admin/users/${userId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('modalTitle').textContent = 'Edit User';
-                        document.getElementById('name').value = data.name;
-                        document.getElementById('email').value = data.email;
-                        document.getElementById('role').value = data.roles[0].name;
-                        if (data.roles[0].name === 'head') {
-                            document.getElementById('office-selection').classList.remove('hidden');
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.editUserButton').forEach(function(button) {
+                button.addEventListener('click', function () {
+                    var userId = this.getAttribute('data-user');
+                    fetch(`/admin/users/${userId}/edit`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('modalTitle').textContent = 'Edit User';
+                            document.getElementById('username').value = data.username;
                             document.getElementById('office_id').value = data.office_id;
-                        } else {
-                            document.getElementById('office-selection').classList.add('hidden');
-                        }
-                        document.getElementById('userId').value = data.id;
-                        document.getElementById('userForm').action = `/admin/users/${userId}`;
-                        document.getElementById('userModal').classList.remove('hidden');
-                    });
+                            document.getElementById('role').value = data.roles[0].name;
+                            document.getElementById('userId').value = data.id;
+                            document.getElementById('userForm').action = `/admin/users/${userId}`;
+                            document.getElementById('methodField').value = 'PUT'; // Set form method to PUT for editing
+                            document.getElementById('userModal').classList.remove('hidden');
+                        });
+                });
             });
         });
 
         document.getElementById('closeModalButton').addEventListener('click', function () {
             document.getElementById('userModal').classList.add('hidden');
-        });
-
-        document.getElementById('role').addEventListener('change', function () {
-            var role = this.value;
-            var officeSelection = document.getElementById('office-selection');
-            if (role === 'head') {
-                officeSelection.classList.remove('hidden');
-            } else {
-                officeSelection.classList.add('hidden');
-            }
         });
     </script>
 @endsection

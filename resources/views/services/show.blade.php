@@ -2,16 +2,25 @@
 
 @section('content')
     <div class="mx-auto p-8">
+        <!-- Display success message -->
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Success:</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-6">
-            <a href="{{ route('services.show', $service->id) }}" class="text-3xl">
+            <a href="{{ route('services.details', $service->id) }}" class="text-3xl">
                 ←
             </a>
             <h1 class="text-2xl font-bold text-center flex-grow">
                 {{ strtoupper($service->service_name) }}
             </h1>
             <hr class="mt-2 mb-4">
-            <button class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+            <!-- Add Button -->
+            <button onclick="document.getElementById('addModal').style.display='block'" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
                 Add
             </button>
         </div>
@@ -54,8 +63,12 @@
                         <td class="border border-gray-300 p-2">{{ $info->processing_time }}</td>
                         <td class="border border-gray-300 p-2">{{ $info->person_responsible }}</td>
                         <td class="border border-gray-300 p-2 text-center">
-                            <button class="bg-green-500 text-white py-1 px- 2 rounded hover:bg-green-600">Edit</button>
-                            <button class="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600">Delete</button>
+                            <button class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600">Edit</button>
+                            <form action="{{ route('services.info.delete', ['service_id' => $service->id, 'info_id' => $info->id]) }}" method="POST" style="display:inline;" onsubmit="return confirmDeletion();">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600">Delete</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
@@ -75,5 +88,73 @@
                 </tr>
             </tfoot>
         </table>
+
+        <!-- Add Modal -->
+        <div id="addModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
+            <div class="flex items-center justify-center min-h-screen">
+                <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+                    <h2 class="text-2xl font-bold mb-4">Add Service Info</h2>
+                    <form action="{{ route('services.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="service_id" value="{{ $service->id }}">
+                        <div class="mb-4">
+                            <label for="clients" class="block text-gray-700">Clients</label>
+                            <input type="text" id="clients" name="clients" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+                        <div class="mb-4">
+                            <label for="agency_action" class="block text-gray-700">Agency Action</label>
+                            <input type="text" id="agency_action" name="agency_action" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="info_title" class="block text-gray-700">Info Title</label>
+                            <input type="text" id="info_title" name="info_title" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="step" class="block text-gray-700">Step</label>
+                            <input type="text" id="step" name="step" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="fees" class="block text-gray-700">Fees</label>
+                            <input type="text" id="fees" name="fees" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="total_fees" class="block text-gray-700">Total Fees</label>
+                            <input type="text" id="total_fees" name="total_fees" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="processing_time" class="block text-gray-700">Processing Time</label>
+                            <input type="text" id="processing_time" name="processing_time" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="total_response_time" class="block text-gray-700">Total Response Time</label>
+                            <input type="text" id="total_response_time" name="total_response_time" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="person_responsible" class="block text-gray-700">Person Responsible</label>
+                            <input type="text" id="person_responsible" name="person_responsible" class="w-full border border-gray-300 p-2 rounded-lg">
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="button" class="mr-4 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400" onclick="document.getElementById('addModal').style.display='none'">Cancel</button>
+                            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- JavaScript for confirmation -->
+    <script>
+        function confirmDeletion() {
+            return confirm('Are you sure you want to delete this item? This action cannot be undone.');
+        }
+    </script>
 @endsection

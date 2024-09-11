@@ -17,9 +17,10 @@ return new class extends Migration
             $table->string('description');
             $table->foreignId('office_id')->constrained()->onDelete('cascade');
             $table->enum('classification', ['SIMPLE', 'COMPLEX', 'SIMPLE - COMPLEX', 'HIGHLY TECHNICAL']);
-            $table->foreignId('transaction_id')->constrained()->onDelete('cascade');
-            $table->string('checklist_of_requirements');
-            $table->string('where_to_secure');
+            $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('cascade');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');  // Status column
+            $table->string('checklist_of_requirements')->nullable();
+            $table->string('where_to_secure')->nullable();
             $table->timestamps();
         });
     }

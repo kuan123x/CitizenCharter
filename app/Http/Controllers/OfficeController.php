@@ -4,15 +4,55 @@ namespace App\Http\Controllers;
 
 use App\Models\Office;
 use App\Models\Service;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OfficeController extends Controller
 {
+    // public function index()
+    // {
+    //     $offices = Office::all();
+    //     return view('pages.offices', compact('offices'));
+    // }
+    // public function index()
+    // {
+    //     $user = auth()->user();
+
+    //     if ($user->hasRole('head')) {
+    //         $office = $user->office;
+
+    //         $services = $office->services;
+
+    //         return view('offices.show', compact('office', 'services'));
+    //     }
+
+    //     $offices = Office::all();
+    //     return view('pages.offices', compact('offices'));
+    // }
     public function index()
-    {
-        $offices = Office::all();
-        return view('pages.offices', compact('offices'));
+{
+    $user = auth()->user();
+
+    if ($user->hasRole('head')) {
+        // Fetch the office assigned to this head user
+        $office = $user->office;
+
+        // Fetch services related to the office
+        $services = $office->services;
+
+        // Fetch all transactions for the dropdown
+        $transactions = Transaction::all();
+
+        // Pass transactions, office, and services to the view
+        return view('offices.show', compact('office', 'services', 'transactions'));
     }
+
+    // If the user is an admin, fetch all offices
+    $offices = Office::all();
+    return view('pages.offices', compact('offices'));
+}
+
 
     public function store(Request $request)
     {
@@ -26,13 +66,22 @@ class OfficeController extends Controller
         return redirect()->route('admin.offices.index')->with('success', 'Office added successfully.');
     }
 
-    public function show($id)
+//     public function show($id)
+// {
+//     $office = Office::findOrFail($id);
+//     $services = $office->services;
+
+//     return view('offices.show', compact('office', 'services'));
+// }
+public function show($id)
 {
     $office = Office::findOrFail($id);
     $services = $office->services; // Assuming you have a relationship set up between Office and Service
+    $transactions = Transaction::all(); // Fetch all transactions for the dropdown
 
-    return view('offices.show', compact('office', 'services'));
+    return view('offices.show', compact('office', 'services', 'transactions')); // Pass transactions to the view
 }
+
 
 public function storeService(Request $request, $officeId)
 {

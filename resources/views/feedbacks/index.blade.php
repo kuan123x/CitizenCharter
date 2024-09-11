@@ -3,7 +3,7 @@
 @section('content')
     <div class="mb-4">
         <!-- Feedback Submission Form for Testing (Hide this in production) -->
-        @guest
+        {{-- @guest --}}
             <h1 class="text-2xl font-bold text-center mb-6">Submit Feedback</h1>
 
             <form action="{{ route('feedbacks.store') }}" method="POST" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -28,7 +28,7 @@
                     <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Submit</button>
                 </div>
             </form>
-        @endguest
+        {{-- @endguest --}}
     </div>
 
     <!-- Displaying Feedbacks (Visible to Head and Admin) -->

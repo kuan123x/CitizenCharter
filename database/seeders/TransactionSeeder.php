@@ -15,7 +15,9 @@ class TransactionSeeder extends Seeder
     {
         Transaction::create([
             'type_of_transaction' => 'SIMPLE',
-
+        ]);
+        Transaction::create([
+            'type_of_transaction' => 'G2G',
         ]);
     }
 }
