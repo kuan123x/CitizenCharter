@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'image', 'status', 'created_by'];
+    protected $fillable = ['name', 'description', 'image', 'status', 'created_by', 'user_id'];
 
     // Scope to filter pending events
     public function scopePending($query)

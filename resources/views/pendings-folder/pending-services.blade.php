@@ -15,9 +15,9 @@
 
     </div>
 @endsection --}}
-@extends('layouts.admin')
+@extends('pages.pendings')
 
-@section('content')
+@section('pending-content')
     <h1 class="text-2xl font-bold mb-4">Pending Services</h1>
 
     @if(session('success'))

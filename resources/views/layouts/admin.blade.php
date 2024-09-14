@@ -70,9 +70,10 @@
                 <a href="{{ route('offices') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->routeIs('offices') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
                     OFFICES
                 </a>
-                <a href="{{ route('events') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('events') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
+                <a href="{{ route('events.page') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('events') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
                     EVENTS
                 </a>
+
                 @role('admin')
                 <a href="{{ route('pendings') }}" class="block py-2.5 px-4 rounded @if(request()->routeIs('pendings') || request()->routeIs('pending.events') || request()->routeIs('pending.services')) bg-[#9fb3fb] text-white @else bg-[#cfd9fd] text-gray-600 @endif hover:bg-[#9fb3fb] transition-colors duration-300 text-center w-48">PENDINGS</a>
                 @endrole
