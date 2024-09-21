@@ -26,6 +26,19 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Route::get('/mvmsp', [UserController::class, 'mvmsp']);
+    Route::get('/mvmsp', function() {
+        return view('pages.mvmsp');
+    })->name('mvmsp');
+    Route::get('/org-chart', function() {
+        return view('pages.org-chart');
+    })->name('org-chart');
+    Route::get('/elected-officials', function() {
+        return view('pages.elected-officials');
+    })->name('elected-officials');
+    Route::get('/offices/feedbacks', [OfficeController::class, 'feedbacks'])->name('feedbacks');
+    
+    
     // Admin routes (require 'admin' role)
     Route::middleware(['auth', 'role:admin'])->group(function () {
 
@@ -39,6 +52,7 @@ Route::middleware('auth')->group(function () {
         // Office management
         Route::get('/admin/offices', [OfficeController::class, 'index'])->name('admin.offices.index');
         Route::post('/admin/offices', [OfficeController::class, 'store'])->name('admin.storeOffice');
+
 
         // Pending services (admin approval)
         Route::get('/admin/pending-services', [ServiceController::class, 'pendingServices'])->name('pending.services');

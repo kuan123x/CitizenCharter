@@ -50,8 +50,12 @@ class OfficeController extends Controller
 
     // If the user is an admin, fetch all offices
     $offices = Office::all();
-    return view('pages.offices', compact('offices'));
-}
+    return view('offices.offices', compact('offices'));
+}   
+
+    public function feedbacks() {
+        return view('offices.feedbacks');
+    }
 
 
     public function store(Request $request)
