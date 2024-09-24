@@ -36,7 +36,7 @@ class ServicesInfoController extends Controller
             'service_id' => $request->service_id,
         ]);
 
-        return redirect()->route('services.show', $request->service_id)->with('success', 'Service info added successfully');
+        return redirect()->route('services.details', ['id' => $request->service_id])->with('success', 'Service info added successfully');
     }
 
     public function show($id)
@@ -50,6 +50,20 @@ class ServicesInfoController extends Controller
         // Pass the data to the view
         return view('services.show', compact('service', 'services_infos'));
     }
+
+    public function update(Request $request, $service_id, $info_id)
+{
+    $request->validate([
+        'clients' => 'required|string|max:255',
+        // Add other validations as necessary...
+    ]);
+
+    $info = ServicesInfo::where('id', $info_id)->where('service_id', $service_id)->firstOrFail();
+    $info->update($request->all());
+
+    return redirect()->route('services.details', ['id' => $request->service_id])->with('success', 'Service info updated successfully');
+}
+
 
     public function destroy($service_id, $info_id)
     {

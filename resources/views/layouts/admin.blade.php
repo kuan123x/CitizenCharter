@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -86,6 +87,52 @@
                 </a>
             </nav>
 
+
+            {{-- <div class="relative mt-6">
+                <button id="notifications-button" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 bg-[#cfd9fd] hover:bg-[#9fb3fb] flex items-center">
+                    <i class="fas fa-bell"></i>
+                    @php
+                        $unreadCount = auth()->user()->notifications()->whereNull('read_at')->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2">{{ $unreadCount }}</span>
+                    @endif
+                </button>
+
+
+                <div id="notifications-dropdown" class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+                    <ul class="max-h-60 overflow-y-auto">
+                        @forelse(auth()->user()->notifications as $notification)
+                            <li class="px-4 py-2 border-b border-gray-200">
+                                <strong>{{ $notification->data['title'] }}</strong>
+                                <p>{{ $notification->data['description'] }}</p>
+                                <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
+                            </li>
+                        @empty
+                            <li class="px-4 py-2">No notifications available.</li>
+                        @endforelse
+                    </ul>
+                </div>
+            </div> --}}
+            <a href="{{ route('notifications.index') }}" class="relative">
+                <i class="fas fa-bell"></i>
+                @if(auth()->user()->unreadNotifications->count())
+                    <span class="absolute top-0 right-0 bg-red-600 text-white rounded-full px-2 text-xs">
+                        {{ auth()->user()->unreadNotifications->count() }}
+                    </span>
+                @endif
+            </a>
+
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+
+                <x-dropdown-link :href="route('logout')"
+                        onclick="event.preventDefault();
+                                    this.closest('form').submit();">
+                    {{ __('Log Out') }}
+                </x-dropdown-link>
+            </form>
         </aside>
 
         <!-- Main Content -->
@@ -95,5 +142,24 @@
             </div>
         </main>
     </div>
+
+    <!-- JavaScript for Notifications Dropdown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('notifications-button');
+            const dropdown = document.getElementById('notifications-dropdown');
+
+            button.addEventListener('click', function() {
+                dropdown.classList.toggle('hidden');
+            });
+
+            // Optional: Hide the dropdown when clicking outside of it
+            document.addEventListener('click', function(event) {
+                if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

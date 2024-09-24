@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+// use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Notifications\EventCreatedNotification;
+use App\Notifications\EventStatusNotification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class EventController extends Controller
 {
@@ -15,24 +20,52 @@ class EventController extends Controller
         return view('pages.events', compact('approvedEvents'));
     }
 
-    public function store(Request $request)
+//     public function store(Request $request)
+// {
+
+//     $request->validate([
+//         'title' => 'required|string|max:255',
+//         'description' => 'required|string',
+//         'image' => 'required|url',
+//     ]);
+
+//     try {
+
+//         $event = new Event();
+//         $event->title = $request->title;
+//         $event->description = $request->description;
+//         $event->image = $request->image;
+//         $event->status = 'pending';
+//         $event->user_id = auth()->id();
+//         $event->save();
+
+//         return redirect()->route('events.page')->with('success', 'Event created and waiting for approval.');
+//     } catch (\Exception $e) {
+//         return redirect()->back()->with('error', 'Failed to create event.');
+//     }
+// }
+public function store(Request $request)
 {
-    // Validate the request
     $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'required|string',
-        'image' => 'required|url', // Validate as a URL
+        'image' => 'required|url',
     ]);
 
     try {
-        // Create the event
         $event = new Event();
         $event->title = $request->title;
         $event->description = $request->description;
-        $event->image = $request->image; // Save the image URL into the 'image' column
+        $event->image = $request->image;
         $event->status = 'pending';
-        $event->user_id = auth()->id(); // Set the user_id to the authenticated user
+        $event->user_id = auth()->id();
         $event->save();
+
+        // Notify admins
+        $admins = User::role('admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new EventCreatedNotification($event));
+        }
 
         return redirect()->route('events.page')->with('success', 'Event created and waiting for approval.');
     } catch (\Exception $e) {
@@ -47,23 +80,67 @@ class EventController extends Controller
         return view('pendings-folder.pending-events', compact('pendingEvents'));
     }
 
+    // public function approveEvent($id)
+    // {
+
+    //     $event = Event::findOrFail($id);
+    //     $event->status = 'approved';
+    //     $event->save();
+
+    //     return redirect()->route('pending.events')->with('success', 'Event approved successfully.');
+    // }
+
+    // public function rejectEvent($id)
+    // {
+
+    //     $event = Event::findOrFail($id);
+    //     $event->status = 'rejected';
+    //     $event->save();
+
+    //     return redirect()->route('pending.events')->with('success', 'Event rejected successfully.');
+    // }
     public function approveEvent($id)
     {
-        // Approve the event
         $event = Event::findOrFail($id);
         $event->status = 'approved';
         $event->save();
+
+        // Notify the user who created the event
+        $user = User::find($event->user_id);
+        $user->notify(new EventStatusNotification($event, 'approved'));
 
         return redirect()->route('pending.events')->with('success', 'Event approved successfully.');
     }
 
     public function rejectEvent($id)
     {
-        // Reject the event
         $event = Event::findOrFail($id);
         $event->status = 'rejected';
         $event->save();
 
+        // Notify the user who created the event
+        $user = User::find($event->user_id);
+        $user->notify(new EventStatusNotification($event, 'rejected'));
+
         return redirect()->route('pending.events')->with('success', 'Event rejected successfully.');
     }
+
+//     public function notifications()
+// {
+//     $notifications = auth()->user()->notifications()->orderBy('created_at', 'desc')->get();
+//     return view('notifications.index', compact('notifications'));
+// }
+
+// public function markAsRead($id)
+// {
+//     // Fetch the notification for the authenticated user
+//     $notification = Auth::user()->notifications()->findOrFail($id);
+
+//     // Mark the notification as read
+//     $notification->markAsRead(); // This is the method that marks the notification as read
+
+//     return redirect()->back();
+// }
+
+
 }

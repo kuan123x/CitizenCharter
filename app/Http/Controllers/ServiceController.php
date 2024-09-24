@@ -25,6 +25,7 @@ class ServiceController extends Controller
     // Fetch all service info related to the service
     $services_infos = ServicesInfo::where('service_id', $serviceId)->get();
 
+
     // Pass the service and related service infos to the view
     return view('services.show', compact('service', 'services_infos'));
 }

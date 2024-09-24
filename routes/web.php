@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -25,6 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index'); // View notifications
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+
 
     // Admin routes (require 'admin' role)
     Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -65,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/services/{id}', [ServiceController::class, 'show'])->name('services.show');
     Route::get('/services/{id}/details', [ServiceController::class, 'showService'])->name('services.details');
     Route::post('/services/store', [ServicesInfoController::class, 'store'])->name('services.store');
+    Route::put('/services/{service_id}/info/{info_id}', [ServicesInfoController::class, 'update'])->name('services.info.update');
     Route::delete('/services/{service_id}/info/{info_id}', [ServicesInfoController::class, 'destroy'])->name('services.info.delete');
 
     // Pending services/events/offices for admin review
@@ -82,6 +89,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
 Route::post('/feedbacks', [FeedbackController::class, 'store'])->name('feedbacks.store');
 Route::post('/feedbacks/{feedback}/reply', [FeedbackController::class, 'reply'])->name('feedbacks.reply');
+
+// Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
 
 // Authentication routes
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');

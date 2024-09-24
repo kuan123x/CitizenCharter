@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Office::class);
     }
+
+    public function unreadNotifications()
+{
+    return $this->hasMany(Notification::class)->whereNull('read_at');
+}
 }
