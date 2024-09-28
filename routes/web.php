@@ -46,6 +46,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/offices', [OfficeController::class, 'index'])->name('admin.offices.index');
         Route::post('/admin/offices', [OfficeController::class, 'store'])->name('admin.storeOffice');
 
+        Route::put('/admin/offices/{office}', [OfficeController::class, 'update'])->name('admin.offices.update');
+    Route::delete('/admin/offices/{office}', [OfficeController::class, 'destroy'])->name('admin.offices.destroy');
+
         // Pending services (admin approval)
         Route::get('/admin/pending-services', [ServiceController::class, 'pendingServices'])->name('pending.services');
         Route::post('/admin/services/{serviceId}/approve', [ServiceController::class, 'approveService'])->name('services.approve');
@@ -62,6 +65,8 @@ Route::middleware('auth')->group(function () {
 
     // Route for storing a new event (from the modal)
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
     // Offices and services
     Route::get('/offices', [OfficeController::class, 'index'])->name('offices');
@@ -69,10 +74,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/offices/{id}/services', [OfficeController::class, 'storeService'])->name('services.storeService');
 
     Route::get('/services/{id}', [ServiceController::class, 'show'])->name('services.show');
+    Route::get('/services/edit/{id}', [ServiceController::class, 'edit'])->name('services.edit');
     Route::get('/services/{id}/details', [ServiceController::class, 'showService'])->name('services.details');
     Route::post('/services/store', [ServicesInfoController::class, 'store'])->name('services.store');
+
     Route::put('/services/{service_id}/info/{info_id}', [ServicesInfoController::class, 'update'])->name('services.info.update');
     Route::delete('/services/{service_id}/info/{info_id}', [ServicesInfoController::class, 'destroy'])->name('services.info.delete');
+
+    Route::post('/offices/{id}/services', [ServiceController::class, 'storeService'])->name('services.storeService');
+    // Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+    // Route::put('/services/{serviceId}', [ServiceController::class, 'updateService'])->name('services.update');
+    Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
+
+    Route::delete('/services/{serviceId}', [ServiceController::class, 'deleteService'])->name('services.delete');
 
     // Pending services/events/offices for admin review
     Route::get('/pendings', function () {

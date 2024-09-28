@@ -114,6 +114,27 @@ public function storeService(Request $request, $officeId)
     }
 }
 
+public function update(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'office_name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:255',
+    ]);
+
+    $office = Office::findOrFail($id);
+    $office->update($validatedData);
+
+    return redirect()->route('admin.offices.index')->with('success', 'Office updated successfully.');
+}
+
+public function destroy($id)
+{
+    $office = Office::findOrFail($id);
+    $office->delete();
+
+    return redirect()->route('admin.offices.index')->with('success', 'Office deleted successfully.');
+}
+
 
 }
 

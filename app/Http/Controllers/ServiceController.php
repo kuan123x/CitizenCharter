@@ -13,9 +13,13 @@ class ServiceController extends Controller
 {
     public function show($id)
     {
+        // Fetch the service and its related information
         $service = Service::findOrFail($id);
-        return view('services.show', compact('service'));
+        $services_infos = ServicesInfo::where('service_id', $id)->get(); // Adjust this query as needed
+
+        return view('services.show', compact('service', 'services_infos')); // Pass both variables to the view
     }
+
 
     public function showService($serviceId)
 {
@@ -104,4 +108,43 @@ public function storeService(Request $request, $officeId)
 
         return redirect()->route('pending.services')->with('success', 'Service rejected successfully.');
     }
+
+    public function edit($id)
+{
+    $service = Service::findOrFail($id);
+    return response()->json($service);
+}
+
+
+    public function update(Request $request, $serviceId)
+{
+    // Validate the request
+    $request->validate([
+        'service_name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'classification' => 'required|in:SIMPLE,COMPLEX,SIMPLE - COMPLEX,HIGHLY TECHNICAL',
+        'transaction_id' => 'required|exists:transactions,id',
+        'checklist_of_requirements' => 'nullable|string',
+        'where_to_secure' => 'nullable|string',
+    ]);
+
+    // Find the service
+    $service = Service::findOrFail($serviceId);
+
+    // Update the service
+    $service->update($request->all());
+
+    return redirect()->back()->with('success', 'Service updated successfully.');
+}
+
+public function deleteService($serviceId)
+{
+    // Find the service
+    $service = Service::findOrFail($serviceId);
+
+    // Delete the service
+    $service->delete();
+
+    return redirect()->back()->with('success', 'Service deleted successfully.');
+}
 }

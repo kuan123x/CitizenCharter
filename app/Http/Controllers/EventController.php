@@ -57,21 +57,31 @@ public function store(Request $request)
         $event->title = $request->title;
         $event->description = $request->description;
         $event->image = $request->image;
-        $event->status = 'pending';
+
+        // Check user role
+        if (auth()->user()->hasRole('admin')) {
+            $event->status = 'approved'; // Admins directly approve their events
+        } else if (auth()->user()->hasRole('head')) {
+            $event->status = 'pending'; // Heads need approval
+        }
+
         $event->user_id = auth()->id();
         $event->save();
 
-        // Notify admins
-        $admins = User::role('admin')->get();
-        foreach ($admins as $admin) {
-            $admin->notify(new EventCreatedNotification($event));
+        // Notify admins if it's pending
+        if ($event->status === 'pending') {
+            $admins = User::role('admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new EventCreatedNotification($event));
+            }
         }
 
-        return redirect()->route('events.page')->with('success', 'Event created and waiting for approval.');
+        return redirect()->route('events.page')->with('success', 'Event created successfully.' . ($event->status === 'pending' ? ' Waiting for approval.' : ''));
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Failed to create event.');
     }
 }
+
 
     public function showPendingEvents()
     {
@@ -141,6 +151,40 @@ public function store(Request $request)
 
 //     return redirect()->back();
 // }
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image' => 'required|url',
+    ]);
+
+    try {
+        $event = Event::findOrFail($id);
+        $event->title = $request->title;
+        $event->description = $request->description;
+        $event->image = $request->image;
+        $event->save();
+
+        return redirect()->route('events.page')->with('success', 'Event updated successfully.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to update event.');
+    }
+}
+
+public function destroy($id)
+{
+    try {
+        $event = Event::findOrFail($id);
+        $event->delete();
+
+        return redirect()->route('events.page')->with('success', 'Event deleted successfully.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to delete event.');
+    }
+}
+
 
 
 }
