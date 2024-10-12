@@ -20,9 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        // 'name',
         'username',
-        // 'email',
         'password',
         'office_id',
     ];
@@ -63,5 +61,9 @@ class User extends Authenticatable
     public function office()
     {
         return $this->belongsTo(Office::class);
+    }
+
+    public function guest() {
+        return $this->hasMany(Office::class);
     }
 }

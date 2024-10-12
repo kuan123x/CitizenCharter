@@ -9,6 +9,10 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'type_of_transaction',
+    ];
+    
     public function services()
     {
         return $this->hasMany(Service::class);

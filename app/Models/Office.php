@@ -14,7 +14,7 @@ class Office extends Model
 
     protected $fillable = [
         'office_name',
-        'description',
+        // 'description',
     ];
 
     public function services()

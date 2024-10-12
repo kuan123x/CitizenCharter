@@ -10,29 +10,30 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-       'service_name',
+        'service_name',
         'description',
+        'office_id',
         'classification',
-        'transaction_id',  // Keep this as the foreign key for transactions
+        'transaction_id',
+        'status',
         'checklist_of_requirements',
         'where_to_secure',
-        'status',
     ];
 
     public function office()
     {
-        return $this->belongsTo(Office::class);
+        return $this->belongsTo(Office::class, 'office_id');
     }
 
     // Define the relationship with the transaction
     public function transaction()
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 
     // Define the relationship with service info
     public function serviceInfos()
     {
-        return $this->hasMany(ServicesInfo::class);
+        return $this->hasMany(ServicesInfo::class, 'service_id');
     }
 }

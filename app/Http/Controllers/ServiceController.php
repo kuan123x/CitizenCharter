@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Log;
 class ServiceController extends Controller
 {
     public function show($id)
-    {
-        $service = Service::findOrFail($id);
-        return view('services.show', compact('service'));
+    {   
+        // $servicesInfo = ServicesInfo::first();
+        $service = Service::with('serviceInfos')->findOrFail($id);
+        // $office = load(Office);
+        return view('services.show', compact('service', 'office', 'transaction'));
     }
 
     public function showService($serviceId)
 {
     // Fetch the service by its ID
     $service = Service::findOrFail($serviceId);
-
-    // Fetch all service info related to the service
     $services_infos = ServicesInfo::where('service_id', $serviceId)->get();
 
     // Pass the service and related service infos to the view
@@ -59,10 +59,6 @@ public function storeService(Request $request, $officeId)
     return redirect()->back()->with('success', 'Service added and pending approval.');
 }
 
-
-
-
-    // Show only approved services for an office
     public function showOfficeServices($officeId)
     {
         $services = Service::where('office_id', $officeId)

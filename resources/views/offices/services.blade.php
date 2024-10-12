@@ -9,7 +9,7 @@
 
         <!-- List of Offices Title -->
         <h1 class="text-2xl font-bold text-center flex-1">
-            List of Offices
+            {{ $office->office_name }} Services
         </h1>
 
         <!-- Add Office Button (Visible only to Admin) -->
@@ -23,10 +23,11 @@
     <hr class="mb-6 border-2 border-gray-300">
 
     <!-- Cards for Offices -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        @foreach($offices as $office)
-            <a href="{{ route('offices.services', $office->id) }}" class="block bg-[#ccd8fe] p-4 rounded-lg shadow-md hover:bg-[#bbc4fb]">
-                <h2 class="text-xl font-semibold text-center">{{ $office->office_name }}</h2> 
+    <div class="w-full gap-6">
+        @foreach($services as $service)
+            <a href="{{ route('offices.show', ['office_id'=>$office->id, 'service_id'=>$service->id]) }}" class="block bg-[#ccd8fe] p-4 rounded-lg shadow-md hover:bg-[#bbc4fb]">
+                <h2 class="text-xl font-bold text-center">{{ $service->service_name }}</h2> 
+                <h2 class="text-center">{{ $service->description }}</h2> 
             </a>
         @endforeach
     </div>

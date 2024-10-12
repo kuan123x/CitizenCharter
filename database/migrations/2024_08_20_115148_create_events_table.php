@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('image')->nullable();
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            // $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
