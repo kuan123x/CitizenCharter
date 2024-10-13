@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class EventStatusNotification extends Notification implements ShouldQueue
@@ -49,7 +48,7 @@ class EventStatusNotification extends Notification implements ShouldQueue
         return [
             'event_id' => $this->event->id,
             'title' => 'Event Status Update',
-            'description' => "Your event '{$this->event->title}' has been {$this->status}.",
+            'description' => "Your event titled '{$this->event->title}' has been {$this->status}.",
             'dateTime' => now(),
         ];
     }

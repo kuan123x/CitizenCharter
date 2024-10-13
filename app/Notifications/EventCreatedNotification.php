@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class EventCreatedNotification extends Notification implements ShouldQueue
@@ -46,7 +45,7 @@ class EventCreatedNotification extends Notification implements ShouldQueue
         return [
             'event_id' => $this->event->id,
             'title' => 'New Event Created',
-            'description' => 'A new event has been created and is awaiting approval.',
+            'description' => 'A new event titled "' . $this->event->title . '" has been created and is awaiting approval.',
             'dateTime' => now(),
         ];
     }

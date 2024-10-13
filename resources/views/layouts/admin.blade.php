@@ -13,7 +13,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -32,32 +31,19 @@
                     </span>
                 </div>
             </div>
-            <!-- Avatar and User Info -->
-            <div class="mt-4 flex flex-col items-center">
-                @php
-                    $role = Auth::user()->role; // Assuming role is a property of the user
-                    $avatar = match($role) {
-                        'admin' => 'A',
-                        'head' => 'H',
-                        'sub_head' => 'SH',
-                        default => 'U', // Default avatar for unknown roles
-                    };
-                @endphp
-                <div class="w-16 h-16 bg-blue-300 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                    {{ $avatar }}
-                </div>
-                <span class="mt-2 text-lg font-medium">
-                    @if($role == 'admin')
-                        Admin
-                    @elseif($role == 'head')
-                        Head
-                    @elseif($role == 'sub_head')
-                        Subhead
-                    @else
-                        User
-                    @endif
-                </span>
+
+            <!-- Displaying Logged-in Username with Initial -->
+            <div class="mt-4 flex justify-center items-center space-x-2">
+                @if(Auth::check())
+                    <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                        {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
+                    </div>
+                    <div class="text-gray-700 font-semibold">
+                        {{ Auth::user()->username }}
+                    </div>
+                @endif
             </div>
+
             <!-- Navigation -->
             <nav class="mt-5 flex flex-col items-center space-y-3">
                 <a href="#" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('mvmsp') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
@@ -88,33 +74,6 @@
                 </a>
             </nav>
 
-
-            {{-- <div class="relative mt-6">
-                <button id="notifications-button" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 bg-[#cfd9fd] hover:bg-[#9fb3fb] flex items-center">
-                    <i class="fas fa-bell"></i>
-                    @php
-                        $unreadCount = auth()->user()->notifications()->whereNull('read_at')->count();
-                    @endphp
-                    @if($unreadCount > 0)
-                        <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2">{{ $unreadCount }}</span>
-                    @endif
-                </button>
-
-
-                <div id="notifications-dropdown" class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
-                    <ul class="max-h-60 overflow-y-auto">
-                        @forelse(auth()->user()->notifications as $notification)
-                            <li class="px-4 py-2 border-b border-gray-200">
-                                <strong>{{ $notification->data['title'] }}</strong>
-                                <p>{{ $notification->data['description'] }}</p>
-                                <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
-                            </li>
-                        @empty
-                            <li class="px-4 py-2">No notifications available.</li>
-                        @endforelse
-                    </ul>
-                </div>
-            </div> --}}
             <a href="{{ route('notifications.index') }}" class="relative">
                 <i class="fas fa-bell"></i>
                 @if(auth()->user()->unreadNotifications->count())
@@ -123,7 +82,6 @@
                     </span>
                 @endif
             </a>
-
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

@@ -20,16 +20,17 @@
 
         <div class="grid grid-cols-2 gap-4 mb-6">
             <div>
-                <p><strong>Office or Division:</strong> ACCOUNTING OFFICE</p>
+                <p><strong>Office or Division:</strong> {{ $service->office->name }}</p>
                 <hr class="my-3">
-                <p><strong>Classification:</strong> SIMPLE</p>
+                <p><strong>Classification:</strong> {{ $service->classification }}</p>
                 <hr class="my-2">
-                <p><strong>Type of Transaction:</strong> G2G-Government to Government</p>
+                <p><strong>Type of Transaction:</strong> {{ $service->transaction->type_of_transaction ?? 'N/A' }}</p>
+
                 <hr class="my-2">
             </div>
             <div class="col-span-2">
-                <p><strong>Checklist of Requirements:</strong> NONE</p>
-                <p><strong>Where to Secure:</strong> ACCOUNTING OFFICE</p>
+                <p><strong>Checklist of Requirements:</strong> {{ $service->checklist_of_requirements ?: 'NONE' }}</p>
+                <p><strong>Where to Secure:</strong> {{ $service->where_to_secure }}</p>
             </div>
         </div>
 
@@ -37,6 +38,7 @@
             <thead class="bg-#9fb3fb">
                 <tr>
                     <th class="border border-gray-300 p-2">CLIENTS</th>
+                    <th class="border border-gray-300 p-2">INFO TITLE</th>
                     <th class="border border-gray-300 p-2">AGENCY ACTION</th>
                     <th class="border border-gray-300 p-2">FEES TO BE PAID</th>
                     <th class="border border-gray-300 p-2">PROCESSING TIME</th>
@@ -48,6 +50,7 @@
                 @foreach($services_infos as $info)
                     <tr>
                         <td class="border border-gray-300 p-2">{{ $info->clients }}</td>
+                        <td class="border border-gray-300 p-2">{{ $info->info_title }}</td>
                         <td class="border border-gray-300 p-2">{{ $info->agency_action }}</td>
                         <td class="border border-gray-300 p-2">{{ $info->fees > 0 ? number_format($info->fees, 2) : 'None' }}</td>
                         <td class="border border-gray-300 p-2">{{ $info->processing_time }}</td>
