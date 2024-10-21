@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Office;
 use App\Models\Service;
+use App\Models\ServicesInfo;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +32,11 @@ class OfficeController extends Controller
     //     $offices = Office::all();
     //     return view('pages.offices', compact('offices'));
     // }
+
+    // public function guest(Request $request, User $user) {
+    //     return $request->user()->offices;
+    // }
+
     public function index()
 {
     $user = auth()->user();
@@ -50,8 +57,37 @@ class OfficeController extends Controller
 
     // If the user is an admin, fetch all offices
     $offices = Office::all();
-    return view('pages.offices', compact('offices'));
-}
+    return view('offices.offices', compact('offices'));
+}   
+
+    public function feedbacks() {
+        return view('offices.feedbacks');
+    }
+
+    public function showServices($id) {
+
+        $services = Service::where('office_id', $id)->get();
+        $office = Office::findOrFail($id);
+        return view('offices.services', compact('services', 'office'));
+    }
+
+    public function serviceDetails($service_id, $office_id){
+        $service = Service::findOrFail($service_id);
+        $office = Office::findOrFail($office_id);
+        $services_infos = ServicesInfo::where('service_id',  $service_id)->get();
+
+        return view('offices.show', compact('service', 'services_infos', 'office'));
+    }
+//         public function showService($serviceId)
+// {
+//     // Fetch the service by its ID
+//     $service = Service::findOrFail($serviceId);
+//     $services_infos = ServicesInfo::where('service_id', $serviceId)->get();
+
+//     // Pass the service and related service infos to the view
+//     return view('services.show', compact('service', 'services_infos'));
+// }
+
 
 
     public function store(Request $request)

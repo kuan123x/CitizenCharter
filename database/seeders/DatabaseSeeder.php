@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(ServicesInfoSeeder::class);
-
+        $this->call(EventSeeder::class);
+        $this->call(NotificationSeeder::class);
     }
 }

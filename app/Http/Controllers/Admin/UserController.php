@@ -58,6 +58,10 @@ class UserController extends Controller
     //     return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     // }
 
+    // public function mvmsp() {
+    //     return view('pages.mvmsp');
+    // }
+
     public function index()
     {
         $users = User::with('roles', 'office')->get();

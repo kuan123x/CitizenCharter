@@ -46,13 +46,13 @@
 
             <!-- Navigation -->
             <nav class="mt-5 flex flex-col items-center space-y-3">
-                <a href="#" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('mvmsp') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
+                <a href="{{ route('mvmsp') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('mvmsp') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
                     MVMSP
                 </a>
-                <a href="#" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('org-chart') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
+                <a href="{{ route('org-chart') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('org-chart') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
                     ORG. CHART
                 </a>
-                <a href="#" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('elected-officials') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
+                <a href="{{ route('elected-officials') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->is('elected-officials') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">
                     ELECTED OFFICIALS
                 </a>
                 <a href="{{ route('offices') }}" class="block py-2.5 px-4 rounded text-center w-48 transition-colors duration-300 {{ request()->routeIs('offices') ? 'bg-[#9fb3fb] text-white' : 'bg-[#cfd9fd] hover:bg-[#9fb3fb]' }}">

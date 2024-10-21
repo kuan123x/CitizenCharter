@@ -24,8 +24,11 @@ class ServicesInfo extends Model
         'person_responsible',
     ];
 
-    public function service()
-    {
-        return $this->belongsTo(Service::class);
+    public function service() {
+        return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function office() {
+        return $this->belongsTo(Office::class, 'office_id');
     }
 }

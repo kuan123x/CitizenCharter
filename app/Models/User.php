@@ -20,9 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        // 'name',
         'username',
-        // 'email',
         'password',
         'office_id',
     ];
@@ -69,4 +67,7 @@ class User extends Authenticatable
 {
     return $this->hasMany(Notification::class)->whereNull('read_at');
 }
+    public function guest() {
+        return $this->hasMany(Office::class);
+    }
 }

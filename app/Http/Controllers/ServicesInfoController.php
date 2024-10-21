@@ -72,5 +72,4 @@ class ServicesInfoController extends Controller
 
         return redirect()->back()->with('success', 'Service info deleted successfully.');
     }
-
 }

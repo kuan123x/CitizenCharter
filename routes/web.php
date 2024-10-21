@@ -27,11 +27,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index'); // View notifications
-    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
-
-
+    // Route::get('/mvmsp', [UserController::class, 'mvmsp']);
+    Route::get('/mvmsp', function() {
+        return view('pages.mvmsp');
+    })->name('mvmsp');
+    Route::get('/org-chart', function() {
+        return view('pages.org-chart');
+    })->name('org-chart');
+    Route::get('/elected-officials', function() {
+        return view('pages.elected-officials');
+    })->name('elected-officials');
+    
+    // Route::get('/offices', [OfficeController::class, 'index'])->name('offices');
+    
+    
     // Admin routes (require 'admin' role)
     Route::middleware(['auth', 'role:admin'])->group(function () {
 
@@ -48,6 +57,7 @@ Route::middleware('auth')->group(function () {
 
         Route::put('/admin/offices/{office}', [OfficeController::class, 'update'])->name('admin.offices.update');
     Route::delete('/admin/offices/{office}', [OfficeController::class, 'destroy'])->name('admin.offices.destroy');
+
 
         // Pending services (admin approval)
         Route::get('/admin/pending-services', [ServiceController::class, 'pendingServices'])->name('pending.services');
@@ -68,12 +78,15 @@ Route::middleware('auth')->group(function () {
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
-    // Offices and services
     Route::get('/offices', [OfficeController::class, 'index'])->name('offices');
-    Route::get('/offices/{id}/services', [OfficeController::class, 'show'])->name('offices.show');
-    Route::post('/offices/{id}/services', [OfficeController::class, 'storeService'])->name('services.storeService');
-
-    Route::get('/services/{id}', [ServiceController::class, 'show'])->name('services.show');
+    Route::get('/offices/{id}', [OfficeController::class, 'showServices'])->name('offices.services');
+    Route::get('/offices/{office_id}/services/{service_id}', [OfficeController::class, 'serviceDetails'])->name('offices.show');
+    // Offices and services
+    // Route::get('/offices/{id}/services', [OfficeController::class, 'show'])->name('offices.show');
+    // Route::post('/offices/{id}/services', [OfficeController::class, 'storeService'])->name('services.storeService');
+    Route::get('/offices/feedbacks', [OfficeController::class, 'feedbacks'])->name('feedbacks');
+    
+    // Route::get('/services/{id}', [ServiceController::class, 'show'])->name('services.show');
     Route::get('/services/edit/{id}', [ServiceController::class, 'edit'])->name('services.edit');
     Route::get('/services/{id}/details', [ServiceController::class, 'showService'])->name('services.details');
     Route::post('/services/store', [ServicesInfoController::class, 'store'])->name('services.store');
