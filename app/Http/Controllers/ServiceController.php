@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class ServiceController extends Controller
 {
     public function show($id)
-    {   
+    {
         // $servicesInfo = ServicesInfo::first();
         $service = Service::with('serviceInfos')->findOrFail($id);
         // $office = load(Office);
@@ -67,7 +67,7 @@ public function storeService(Request $request, $officeId)
 
         $transactions = Transaction::all(); // Fetch all transactions
 
-        return view('offices.show', compact('services', 'transactions'));
+        return view('services.show', compact('services', 'transactions'));
     }
 
     // Admin page for showing pending services

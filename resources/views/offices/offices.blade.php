@@ -25,9 +25,25 @@
     <!-- Cards for Offices -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         @foreach($offices as $office)
-            <a href="{{ route('offices.services', $office->id) }}" class="block bg-[#ccd8fe] p-4 rounded-lg shadow-md hover:bg-[#bbc4fb]">
-                <h2 class="text-xl font-semibold text-center">{{ $office->office_name }}</h2> 
-            </a>
+            <div class="bg-[#ccd8fe] p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold text-center">{{ $office->office_name }}</h2>
+                <div class="flex justify-between mt-4">
+                    <!-- View Office Services -->
+                    <a href="{{ route('offices.services', $office->id) }}" class="bg-blue-500 text-white py-1 px-2 rounded-lg hover:bg-blue-600">View</a>
+
+                    @role('admin')
+                        <!-- Edit Button -->
+                        <button onclick="openEditOfficeModal({{ $office->id }}, '{{ $office->office_name }}')" class="bg-yellow-500 text-white py-1 px-2 rounded-lg hover:bg-yellow-600">Edit</button>
+
+                        <!-- Delete Button -->
+                        <form action="{{ route('admin.deleteOffice', $office->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this office?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bg-red-500 text-white py-1 px-2 rounded-lg hover:bg-red-600">Delete</button>
+                        </form>
+                    @endrole
+                </div>
+            </div>
         @endforeach
     </div>
 
@@ -51,9 +67,31 @@
                 </form>
             </div>
         </div>
+
+        <!-- Edit Office Modal -->
+        <div id="editOfficeModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg w-1/3 p-4">
+                <h2 class="text-xl font-bold mb-4">Edit Office</h2>
+                <form id="editOfficeForm" action="" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-4">
+                        <label for="edit_office_name" class="block text-sm font-medium">Office Name</label>
+                        <input type="text" id="edit_office_name" name="office_name" class="mt-1 p-2 block w-full border rounded" required>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button" id="closeEditOfficeModalButton" class="mr-2 bg-gray-300 text-black px-4 py-2 rounded">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     @endrole
 
     <script>
+        // Add Office Modal
         document.getElementById('openAddOfficeModalButton').addEventListener('click', function () {
             document.getElementById('addOfficeForm').reset();
             document.getElementById('addOfficeModal').classList.remove('hidden');
@@ -61,6 +99,17 @@
 
         document.getElementById('closeOfficeModalButton').addEventListener('click', function () {
             document.getElementById('addOfficeModal').classList.add('hidden');
+        });
+
+        // Edit Office Modal
+        function openEditOfficeModal(id, name) {
+            document.getElementById('editOfficeForm').action = '/admin/offices/' + id;
+            document.getElementById('edit_office_name').value = name;
+            document.getElementById('editOfficeModal').classList.remove('hidden');
+        }
+
+        document.getElementById('closeEditOfficeModalButton').addEventListener('click', function () {
+            document.getElementById('editOfficeModal').classList.add('hidden');
         });
     </script>
 @endsection

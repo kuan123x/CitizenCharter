@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('services_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
-            // $table->foreignId('office_id')->constrained('offices')->onDelete('cascade');
             $table->foreignId('office_id')->constrained('offices')->onDelete('cascade');
             $table->integer('step');
             $table->string('info_title');
             $table->json('clients');
             $table->json('agency_action');
-            $table->double('fees', 8, 2);
+            $table->string('fees');
             $table->json('processing_time');
             $table->json('person_responsible');
-            $table->double('total_fees', 8, 2);
-            $table->string('total_response_time');
+            $table->double('total_fees', 8, 2)->default(0);  // Add default value
+            $table->string('total_response_time')->default('N/A');  // Add default value
             $table->timestamps();
         });
+
     }
 
     /**

@@ -25,9 +25,9 @@
     <!-- Cards for Offices -->
     <div class="w-full gap-6">
         @foreach($services as $service)
-            <a href="{{ route('offices.show', ['office_id'=>$office->id, 'service_id'=>$service->id]) }}" class="block bg-[#ccd8fe] p-4 rounded-lg shadow-md hover:bg-[#bbc4fb]">
-                <h2 class="text-xl font-bold text-center">{{ $service->service_name }}</h2> 
-                <h2 class="text-center">{{ $service->description }}</h2> 
+        <a href="{{ route('services.show', ['id' => $service->id]) }}" class="block bg-[#ccd8fe] p-4 rounded-lg shadow-md hover:bg-[#bbc4fb]">
+            <h2 class="text-xl font-bold text-center">{{ $service->service_name }}</h2>
+                <h2 class="text-center">{{ $service->description }}</h2>
             </a>
         @endforeach
     </div>

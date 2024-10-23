@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Route::get('/mvmsp', [UserController::class, 'mvmsp']);
+    // Pages route
     Route::get('/mvmsp', function() {
         return view('pages.mvmsp');
     })->name('mvmsp');
@@ -36,10 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/elected-officials', function() {
         return view('pages.elected-officials');
     })->name('elected-officials');
-    
-    // Route::get('/offices', [OfficeController::class, 'index'])->name('offices');
-    
-    
+
     // Admin routes (require 'admin' role)
     Route::middleware(['auth', 'role:admin'])->group(function () {
 
@@ -53,6 +50,9 @@ Route::middleware('auth')->group(function () {
         // Office management
         Route::get('/admin/offices', [OfficeController::class, 'index'])->name('admin.offices.index');
         Route::post('/admin/offices', [OfficeController::class, 'store'])->name('admin.storeOffice');
+        // In web.php or admin.php
+Route::put('/admin/offices/{id}', [OfficeController::class, 'update'])->name('admin.updateOffice');
+Route::delete('/admin/offices/{id}', [OfficeController::class, 'destroy'])->name('admin.deleteOffice');
 
 
         // Pending services (admin approval)
@@ -72,15 +72,18 @@ Route::middleware('auth')->group(function () {
     // Route for storing a new event (from the modal)
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
+    // Office and service management routes
     Route::get('/offices', [OfficeController::class, 'index'])->name('offices');
     Route::get('/offices/{id}', [OfficeController::class, 'showServices'])->name('offices.services');
-    Route::get('/offices/{office_id}/services/{service_id}', [OfficeController::class, 'serviceDetails'])->name('offices.show');
-    // Offices and services
-    // Route::get('/offices/{id}/services', [OfficeController::class, 'show'])->name('offices.show');
-    // Route::post('/offices/{id}/services', [OfficeController::class, 'storeService'])->name('services.storeService');
+
+    // Route to display services by office and service ID
+    Route::get('/offices/{office_id}/services/{service_id}', [OfficeController::class, 'serviceDetails'])->name('services.show');
+
+    // Feedbacks page
     Route::get('/offices/feedbacks', [OfficeController::class, 'feedbacks'])->name('feedbacks');
-    
-    // Route::get('/services/{id}', [ServiceController::class, 'show'])->name('services.show');
+
+    // Service management
+    Route::get('/services/{id}', [ServicesInfoController::class, 'show'])->name('services.show');
     Route::get('/services/{id}/details', [ServiceController::class, 'showService'])->name('services.details');
     Route::post('/services/store', [ServicesInfoController::class, 'store'])->name('services.store');
     Route::delete('/services/{service_id}/info/{info_id}', [ServicesInfoController::class, 'destroy'])->name('services.info.delete');
